@@ -1,18 +1,24 @@
 'use strict';
 
 angular.module('sbAdminApp')
-  .controller('LibraryCtrl', ['$http', '$scope', '$stateParams', function ($http, $scope, $stateParams) {
+  .controller('LibraryCtrl', function ($http, $scope, $stateParams, SpringDataRestAdapter) {
 
-  $http.get('http://localhost:8080/api/libraries/' + $stateParams.libraryId).success(function (data) {
-    $scope.library = data;
+  var libraryPromise = $http.get('http://localhost:8080/api/libraries/' + $stateParams.libraryId);
+
+  SpringDataRestAdapter.process(libraryPromise).then(function (processedResponse) {
+    $scope.library = processedResponse;
   });
 
-  $http.get('http://localhost:8080/api/fields/search/findByLibraryId?id=' + $stateParams.libraryId).success(function (data) {
-    $scope.fields = data._embedded.fields;
+  var fieldsPromise = $http.get('http://localhost:8080/api/fields/search/findByLibraryId?id=' + $stateParams.libraryId);
+
+  SpringDataRestAdapter.process(fieldsPromise).then(function (processedResponse) {
+    $scope.fields = processedResponse._embeddedItems;
   });
 
-  $http.get('http://localhost:8080/api/records/search/findByLibraryId?id=' + $stateParams.libraryId).success(function (data) {
-    $scope.records = data._embedded.records;
+  var recordsPromise = $http.get('http://localhost:8080/api/records/search/findByLibraryId?id=' + $stateParams.libraryId);
+
+  SpringDataRestAdapter.process(recordsPromise, ['contents', 'field'], true).then(function (processedResponse) {
+    $scope.records = processedResponse._embeddedItems;
   });
 
   $scope.selectedTab = 0;
@@ -21,4 +27,4 @@ angular.module('sbAdminApp')
     $scope.selectedTab = index;
   }
 
-}]);
+});

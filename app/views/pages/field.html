@@ -1,9 +1,66 @@
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="FieldCtrl">
   <div class="row">
     <div class="col-lg-12">
-      <h1 class="page-header">Field</h1>
+      <h1 class="page-header">Field {{field.title}}</h1>
     </div>
-    <!-- /.col-lg-12 -->
   </div>
-  <!-- /.row -->
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Field
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Title</td>
+              <td>{{field.title}}</td>
+            </tr>
+            <tr>
+              <td>Help</td>
+              <td>{{field.help}}</td>
+            </tr>
+            <tr>
+              <td>Default Value</td>
+              <td>{{field.defaultValue}}</td>
+            </tr>
+            <tr>
+              <td>Sequence</td>
+              <td>{{field.sequence}}</td>
+            </tr>
+            <tr>
+              <td>Size</td>
+              <td>{{field.size}}</td>
+            </tr>
+            <tr>
+              <td>Active</td>
+              <td>{{field.active}}</td>
+            </tr>
+            <tr>
+              <td>Multiple</td>
+              <td>{{field.multiple}}</td>
+            </tr>
+            <tr>
+              <td>Mandatory</td>
+              <td>{{field.mandatory}}</td>
+            </tr>
+            <tr>
+              <td>Presentation</td>
+              <td>{{field.presentation}}</td>
+            </tr>
+            <tr>
+              <td>Field Type</td>
+              <td>{{field.fieldType}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

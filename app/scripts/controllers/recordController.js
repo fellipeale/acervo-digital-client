@@ -1,14 +1,12 @@
 'use strict';
 
 angular.module('sbAdminApp')
-  .controller('RecordCtrl', ['$http', '$scope', '$state', '$stateParams', function ($http, $scope, $state, $stateParams) {
+  .controller('RecordCtrl', ['$http', '$scope', '$stateParams', 'SpringDataRestAdapter', function ($http, $scope, $stateParams, SpringDataRestAdapter) {
 
-  $http.get('http://localhost:8080/api/records/' + $stateParams.recordId).success(function (data) {
-    $scope.record = data
-  });
+  var recordPromise = $http.get('http://localhost:8080/api/records/' + $stateParams.recordId);
 
-  $http.get('http://localhost:8080/api/records/' + $stateParams.recordId + '/contents').success(function (data) {
-    $scope.contents = data._embedded.contents;
+  SpringDataRestAdapter.process(recordPromise, ['contents', 'field'], true).then(function (processedResponse) {
+    $scope.record = processedResponse;
   });
 
 }]);

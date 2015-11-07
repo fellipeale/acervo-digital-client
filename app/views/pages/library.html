@@ -62,7 +62,7 @@
                 </thead>
                 <tbody>
                   <tr ng-repeat="record in records">
-                    <td>{{record.contents[0].values[0].value}}</td>
+                    <td>{{record.contents._embeddedItems[0].values[0].value}}</td>
                     <td class="col-lg-2">
                       <button type="button" class="btn btn-default btn-circle" ui-sref="main.record({recordId: {{record.id}}})">E</button>
                       <button type="button" class="btn btn-default btn-circle">D</button>
@@ -87,7 +87,7 @@
                     <td class="col-lg-4">{{field.title}}</td>
                     <td class="col-lg-5">{{field.fieldType}}</td>
                     <td class="col-lg-2">
-                      <button type="button" class="btn btn-default btn-circle">E</button>
+                      <button type="button" class="btn btn-default btn-circle" ui-sref="main.field({fieldId: {{field.id}}})">E</button>
                       <button type="button" class="btn btn-default btn-circle">D</button>
                     </td>
                   </tr>

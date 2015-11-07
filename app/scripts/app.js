@@ -13,8 +13,10 @@ angular
     'ui.router',
     'ui.bootstrap',
     'angular-loading-bar',
+    'ngResource',
+    'spring-data-rest'
   ])
-  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider) {
+  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
     
     $ocLazyLoadProvider.config({
       debug:false,
@@ -38,7 +40,7 @@ angular
             })
           }
         }
-      })
+      })  
       .state('main.home',{
         templateUrl:'views/pages/home.html',
         url:'/home',
@@ -71,7 +73,18 @@ angular
       })
       .state('main.field',{
         templateUrl:'views/pages/field.html',
-        url:'/field/:fieldId'
+        url:'/field/:fieldId',
+        controller:'FieldCtrl',
+        resolve: {
+          loadMyFile:function($ocLazyLoad) {
+            return $ocLazyLoad.load({
+                name:'sbAdminApp',
+                files:[
+                  'scripts/controllers/fieldController.js'
+                ]
+            })
+          }
+        }
       })
       .state('main.record',{
         templateUrl:'views/pages/record.html',

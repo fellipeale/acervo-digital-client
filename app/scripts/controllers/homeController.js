@@ -1,10 +1,12 @@
 'use strict';
 
 angular.module('sbAdminApp')
-  .controller('HomeCtrl', ['$http', '$scope', function ($http, $scope) {
+  .controller('HomeCtrl', function ($http, $scope, SpringDataRestAdapter) {
 
-  $http.get('http://localhost:8080/api/libraries').success(function (data) {
-    $scope.libraries = data._embedded.libraries;
+  var librariesPromise = $http.get('http://localhost:8080/api/libraries');
+
+  SpringDataRestAdapter.process(librariesPromise).then(function (processedReponse) {
+    $scope.libraries = processedReponse._embeddedItems;
   });
 
-}]);
+});

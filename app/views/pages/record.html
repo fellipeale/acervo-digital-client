@@ -9,6 +9,31 @@
       <div class="panel-heading">
         Record
       </div>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+              <th>Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="content in record.contents._embeddedItems">
+              <td>{{content.field.title}}</td>
+              <td>
+                <div ng-repeat="value in content.values">
+                  {{value.value}}
+                </div>
+              </td>
+              <td class="col-lg-2">
+                <button type="button" class="btn btn-default btn-circle">E</button>
+                <button type="button" class="btn btn-default btn-circle">D</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
