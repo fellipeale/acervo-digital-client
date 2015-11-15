@@ -71,7 +71,7 @@ angular
           }
         }
       })
-      .state('main.field',{
+      .state('main.library.field',{
         templateUrl:'views/pages/field.html',
         url:'/field/:fieldId',
         controller:'FieldCtrl',
@@ -86,7 +86,7 @@ angular
           }
         }
       })
-      .state('main.record',{
+      .state('main.library.record',{
         templateUrl:'views/pages/record.html',
         url:'/record/:recordId',
         controller:'RecordCtrl',

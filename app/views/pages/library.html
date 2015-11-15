@@ -1,42 +1,67 @@
-<div class="container-fluid" ng-controller="LibraryCtrl">
+<div ui-view class="container-fluid" ng-controller="LibraryCtrl">
   <div class="row">
     <div class="col-lg-12">
       <h1 class="page-header">Library {{library.title}}</h1>
     </div>
   </div>
-  <div class="row">
+  <div class="row" ng-show="!editMode">
     <div class="panel panel-default">
       <div class="panel-heading">
         Library
       </div>
       <div class="panel-body">
-        <div class="form-group">
-          <label>Title</label>
-          <input type="text" class="form-control" ng-model="library.title" />
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea ng-model="library.description" class="form-control"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Active</label>
-          <div class="radio">
-            <label>
-              <input type="radio" ng-model="library.active" ng-value="true" />
-              True  
-            </label>
-          </div>
-          <div class="radio">
-            <label>
-              <input type="radio" ng-model="library.active" ng-value="false" />
-              False
-            </label>
-          </div>
-        </div>
+        <table class="table table-hover">
+         <thead>
+           <tr>
+             <th>Attribute</th>
+             <th>Value</th>
+           </tr>
+         </thead>
+         <tbody>
+           <tr>
+             <td>Title</td>
+             <td>{{library.title}}</td>
+           </tr>
+           <tr>
+             <td>Description</td>
+             <td>{{library.description}}</td>
+           </tr>
+           <tr>
+             <td>Active</td>
+             <td>{{library.active}}</td>
+           </tr>
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" ng-click="toggleEditMode()">Edit</button>
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row" ng-show="editMode">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Library
+      </div>
+      <div class="panel-body">
+        <form role="form" class="ng-pristine ng-valid" ng-submit="submit()">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" class="form-control" ng-model="library.title" />
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea ng-model="library.description" class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Active</label>
+            <input type="checkbox" class="form-control" ng-model="library.active" />
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" ui-sref="main.home">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-show="library.id">
     <div class="panel panel-default">
       <div class="panel-heading">
         Library Elements
@@ -64,13 +89,14 @@
                   <tr ng-repeat="record in records">
                     <td>{{record.contents._embeddedItems[0].values[0].value}}</td>
                     <td class="col-lg-2">
-                      <button type="button" class="btn btn-default btn-circle" ui-sref="main.record({recordId: {{record.id}}})">E</button>
+                      <button type="button" class="btn btn-default btn-circle" ui-sref="main.library.record({recordId: {{record.id}}})">E</button>
                       <button type="button" class="btn btn-default btn-circle">D</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <button type="button" class="btn btn-primary" ui-sref="main.library.record">New Record</button>
           </div>
           <div class="tab-pane" ng-class="{'active': selectedTab == 1}">
             <div class="table-responsive">
@@ -85,15 +111,16 @@
                 <tbody>
                   <tr ng-repeat="field in fields">
                     <td class="col-lg-4">{{field.title}}</td>
-                    <td class="col-lg-5">{{field.fieldType}}</td>
+                    <td class="col-lg-5">{{field.fieldType.value}}</td>
                     <td class="col-lg-2">
-                      <button type="button" class="btn btn-default btn-circle" ui-sref="main.field({fieldId: {{field.id}}})">E</button>
+                      <button type="button" class="btn btn-default btn-circle" ui-sref="main.library.field({fieldId: {{field.id}}})">E</button>
                       <button type="button" class="btn btn-default btn-circle">D</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <button type="button" class="btn btn-primary" ui-sref="main.library.field">New Field</button> <!-- I don't know why, but this only work with this quotes -->
           </div>
         </div>
       </div>

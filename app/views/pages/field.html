@@ -4,12 +4,12 @@
       <h1 class="page-header">Field {{field.title}}</h1>
     </div>
   </div>
-  <div class="row">
+  <div class="row" ng-show="!editMode">
     <div class="panel panel-default">
       <div class="panel-heading">
         Field
       </div>
-      <div class="table-responsive">
+      <div class="panel-body">
         <table class="table table-hover">
           <thead>
             <tr>
@@ -56,10 +56,67 @@
             </tr>
             <tr>
               <td>Field Type</td>
-              <td>{{field.fieldType}}</td>
+              <td>{{field.fieldType.value}}</td>
             </tr>
           </tbody>
         </table>
+        <button type="button" ng-click="toggleEditMode()" class="btn btn-primary">Edit</button>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-show="editMode">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Field
+      </div>
+      <div class="panel-body">
+        <form role="form" class="ng-pristine ng-valid" ng-submit="submit()">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" class="form-control" ng-model="field.title" />
+          </div>
+          <div class="form-group">
+            <label>Help</label>
+            <input type="text" class="form-control" ng-model="field.help" />
+          </div>
+          <div class="form-group">
+            <label>Default Value</label>
+            <input type="text" class="form-control" ng-model="field.defaulValue" />
+          </div>
+          <div class="form-group">
+            <label>Sequence</label>
+            <input type="text" class="form-control" ng-model="field.sequence" />
+          </div>
+          <div class="form-group">
+            <label>Size</label>
+            <input type="text" class="form-control" ng-model="field.size" />
+          </div>
+          <div class="form-group">
+          <label>Active</label>
+            <input type="checkbox" class="form-control" ng-model="field.active" />
+          </div>
+          <div class="form-group">
+            <label>Multiple</label>
+            <input type="checkbox" class="form-control" ng-model="field.multiple" />
+          </div>
+          <div class="form-group">
+            <label>Mandatory</label>
+            <input type="checkbox" class="form-control" ng-model="field.mandatory" />
+          </div>
+          <div class="form-group">
+            <label>Presentation</label>
+            <input type="checkbox" class="form-control" ng-model="field.presentation" />
+          </div>
+          <div class="form-group">
+            <label>Field Type</label>
+            <select class="form-control" ng-model="field.fieldType">
+              <option value="">-- Please select --</option>
+              <option ng-repeat="type in fieldTypes" value="{{type._links.self.href}}">{{type.value}}</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" ui-sref="main.home">Cancel</button>
+        </form>
       </div>
     </div>
   </div>

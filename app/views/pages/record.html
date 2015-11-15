@@ -4,18 +4,17 @@
       <h1 class="page-header">Record</h1>
     </div>
   </div>
-  <div class="row">
+  <div class="row" ng-show="!editMode">
     <div class="panel panel-default">
       <div class="panel-heading">
         Record
       </div>
-      <div class="table-responsive">
+      <div class="panel-body">
         <table class="table table-hover">
           <thead>
             <tr>
               <th>Field</th>
               <th>Value</th>
-              <th>Options</th>
             </tr>
           </thead>
           <tbody>
@@ -26,13 +25,33 @@
                   {{value.value}}
                 </div>
               </td>
-              <td class="col-lg-2">
-                <button type="button" class="btn btn-default btn-circle">E</button>
-                <button type="button" class="btn btn-default btn-circle">D</button>
-              </td>
             </tr>
           </tbody>
         </table>
+        <button type="button" ng-click="toggleEditMode()" class="btn btn-primary">Edit</button>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-show="editMode">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Record
+      </div>
+      <div class="panel-body">
+        <form role="form" class="ng-pristine ng-valid" ng-submit="submit()">
+          <div class="form-group" ng-init="initContents(fields)" ng-repeat="field in fields">
+            <label>{{field.title}}</label>
+            <div ng-class="{'input-group': field.multiple}" ng-repeat="value in record.contents._embeddedItems[$index].values" ng-show="field.fieldType.key == 'STRING'">
+              <input type="text" class="form-control" ng-model="value.value"/>
+              <span class="input-group-btn" ng-show="field.multiple"> 
+                <button type="button" class="btn btn-default" ng-click="addValue(record.contents[$parent.$index])" ng-show="field.multiple">+</button>
+                <button type="button" class="btn btn-default" ng-click="removeValue(record.contents[$parent.$index], $index)" ng-show="field.multiple && $index > 0">-</button>
+              </span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" ui-sref="main.home">Cancel</button>
+        </form>
       </div>
     </div>
   </div>
