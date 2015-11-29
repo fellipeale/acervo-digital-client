@@ -5,6 +5,7 @@ angular.module('sbAdminApp')
 
   $scope.library = {};
   $scope.fields = [];
+  $scope.presentationFields = [];
   $scope.records = [];
 
   $scope.editMode = false;
@@ -18,7 +19,13 @@ angular.module('sbAdminApp')
       $scope.library = processedResponse;
     });
 
-    var fieldsPromise = $http.get('http://localhost:8080/api/fields/search/findByPresentationTrueAndLibraryId?id=' + $stateParams.libraryId);
+    var presentationFieldsPromise = $http.get('http://localhost:8080/api/fields/search/findByPresentationTrueAndLibraryId?id=' + $stateParams.libraryId);
+
+    SpringDataRestAdapter.process(presentationFieldsPromise, 'fieldType').then(function (processedResponse) {
+      $scope.presentationFields = processedResponse._embeddedItems;
+    });
+
+    var fieldsPromise = $http.get('http://localhost:8080/api/fields/search/findByLibraryIdOrderBySequenceAsc?id=' + $stateParams.libraryId);
 
     SpringDataRestAdapter.process(fieldsPromise, 'fieldType').then(function (processedResponse) {
       $scope.fields = processedResponse._embeddedItems;

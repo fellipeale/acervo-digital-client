@@ -14,6 +14,7 @@ angular
     'ui.bootstrap',
     'angular-loading-bar',
     'ngResource',
+    'ngFileUpload',
     'spring-data-rest'
   ])
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider',function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
@@ -95,7 +96,8 @@ angular
             return $ocLazyLoad.load({
                 name:'sbAdminApp',
                 files:[
-                  'scripts/controllers/recordController.js'
+                  'scripts/controllers/recordController.js',
+                  'scripts/directives/formatDate.js'
                 ]
             })
           }
