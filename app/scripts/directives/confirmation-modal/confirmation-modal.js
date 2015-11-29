@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sbAdminApp', ['ui.bootstrap'])
+angular.module('sbAdminApp')
   .directive('confirmationModal', ['$modal', function ($modal) {
 
     var ModalInstanceCtrl = function($scope, $modalInstance) {

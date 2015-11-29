@@ -42,7 +42,7 @@
                     {{value.value | number:2}}
                   </div>
                   <div ng-repeat="value in content.values" ng-switch-default>
-                    <a ng-href="http://localhost:8080/download{{value.path}}">{{value.originalName}}</a>
+                    <a ng-href="http://localhost:8080/download{{value.path}}" target="_blank">{{value.originalName}}</a>
                   </div>
                 </div>
               </td>
@@ -64,10 +64,10 @@
             <label>{{field.title}}</label>
             <div ng-repeat="value in contents[$index].values">
               <div ng-class="{'input-group': field.multiple}" ng-switch="field.fieldType.key">
-                <input type="text" ng-required="field.mandatory" class="form-control" ng-model="value.value" ng-switch-when="STRING"/>
-                <input type="date" ng-required="field.mandatory" class="form-control" ng-model="value.value" ng-switch-when="DATE" format-date/>
-                <input type="number" ng-required="field.mandatory" class="form-control" ng-model="value.value" ng-switch-when="NUMERIC"/>
-                <input type="file" ng-required="field.mandatory" class="form-control" ng-model="value.file" ng-switch-default ngf-select="uploadFile(value)"/>
+                <input type="text" ng-required="field.mandatory" tooltip="{{field.help}}" tooltip-placement="top" maxlength="{{field.size}}" class="form-control" ng-model="value.value" ng-switch-when="STRING"/>
+                <input type="date" ng-required="field.mandatory" tooltip="{{field.help}}" tooltip-placement="top" class="form-control" ng-model="value.value" ng-switch-when="DATE" format-date/>
+                <input type="number" ng-required="field.mandatory" tooltip="{{field.help}}" tooltip-placement="top" maxlength="{{field.size}}" class="form-control" ng-model="value.value" ng-switch-when="NUMERIC"/>
+                <input type="file" ng-required="field.mandatory" tooltip="{{field.help}}" tooltip-placement="top" class="form-control" ng-model="value.file" ng-switch-default ngf-select="uploadFile(value)"/>
                 <span class="input-group-btn" ng-show="field.multiple"> 
                   <button type="button" class="btn btn-default" ng-click="addValue(contents[$parent.$index])" ng-show="field.multiple">+</button>
                   <button type="button" class="btn btn-default" ng-click="removeValue(contents[$parent.$index], $index)" ng-show="field.multiple && $index > 0">-</button>

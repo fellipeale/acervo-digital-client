@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sbAdminApp')
-  .controller('LibraryCtrl', function ($http, $scope, $stateParams, SpringDataRestAdapter) {
+  .controller('LibraryCtrl', function ($http, $scope, $state, $stateParams, SpringDataRestAdapter) {
 
   $scope.library = {};
   $scope.fields = [];
@@ -16,7 +16,7 @@ angular.module('sbAdminApp')
     loadLibrary();
     loadPresentationFields();
     loadFields();
-    loadRecords();    
+    // loadRecords();    
   } else {
     $scope.library['active'] = true;
     $scope.editMode = true;
@@ -36,16 +36,19 @@ angular.module('sbAdminApp')
         console.log('Library updated.');
         $scope.successMessage = 'Library updated.';
       }, function(response) {
-        $scope.errorMessage = 'Problem while updating library: ' + response.data;
+        $scope.errorMessage = 'Problem while updating library: ' + response.data.message;
       });
     } else {
-      $http.post('http://localhost:8080/api/libraries/', $scope.library).then(function() {
+      $http.post('http://localhost:8080/api/libraries/', $scope.library).then(function(response) {
         console.log('Library saved.');
         $scope.successMessage = 'Library saved.';
+        var generatedId = response.headers('Location').split('/').pop();
+        $state.go('main.library', {libraryId: generatedId});
       }, function(response) {
-        $scope.errorMessage = 'Problem while saving library: ' + response.data;
+        $scope.errorMessage = 'Problem while saving library: ' + response.data.message;
       });
     }
+    $scope.editMode = false;
   }
 
   $scope.deleteField = function(id) {
@@ -56,7 +59,19 @@ angular.module('sbAdminApp')
       $scope.successMessage = 'Field deleted.';
       loadFields();
     }, function(response) {
-      $scope.errorMessage = 'Problem while deleting field: ' + response.data;
+      $scope.errorMessage = 'Problem while deleting field: ' + response.data.message;
+    });
+  }
+
+  $scope.deleteRecord = function(id) {
+    var recordDeletionPromise = $http.delete('http://localhost:8080/api/records/' + id);
+
+    SpringDataRestAdapter.process(recordDeletionPromise).then(function () {
+      console.log('Record deleted.');
+      $scope.successMessage = 'Record deleted.';
+      loadRecords();
+    }, function(response) {
+      $scope.errorMessage = 'Problem while deleting record: ' + response.data.message;
     });
   }
 
@@ -68,7 +83,7 @@ angular.module('sbAdminApp')
       $scope.successMessage = 'Record deleted.';
       loadRecords();
     }, function(response) {
-      $scope.errorMessage = 'Problem while deleting record: ' + response.data;
+      $scope.errorMessage = 'Problem while deleting record: ' + response.data.message;
     });
   }
 
@@ -85,6 +100,7 @@ angular.module('sbAdminApp')
 
     SpringDataRestAdapter.process(presentationFieldsPromise, 'fieldType').then(function (processedResponse) {
       $scope.presentationFields = processedResponse._embeddedItems;
+      loadRecords();
     });
   }
 
@@ -100,8 +116,23 @@ angular.module('sbAdminApp')
     var recordsPromise = $http.get('http://localhost:8080/api/records/search/findByLibraryId?id=' + $stateParams.libraryId);
 
     SpringDataRestAdapter.process(recordsPromise, ['contents', 'field'], true).then(function (processedResponse) {
-      $scope.records = processedResponse._embeddedItems;
+      $scope.records = createPresentationRecords(processedResponse._embeddedItems);
     });
+  }
+
+  function createPresentationRecords(records) {
+    if (records) {
+      for (var i = 0; i<records.length; i++) {
+        records[i].contents = records[i].contents._embeddedItems.filter(function(content) {
+          return $scope.presentationFields.some(function(field) {
+            return field.id === content.field.id;
+          })
+        }).sort(function(a, b) {
+          return a.field.sequence - b.field.sequence;
+        });
+      }
+    }
+    return records;
   }
 
 });

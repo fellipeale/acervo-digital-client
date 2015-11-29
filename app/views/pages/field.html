@@ -49,10 +49,6 @@
               <td>{{field.size}}</td>
             </tr>
             <tr>
-              <td>Active</td>
-              <td>{{field.active}}</td>
-            </tr>
-            <tr>
               <td>Multiple</td>
               <td>{{field.multiple}}</td>
             </tr>
@@ -95,15 +91,11 @@
           </div>
           <div class="form-group">
             <label>Sequence</label>
-            <input type="number" class="form-control" ng-model="field.sequence" />
+            <input type="number" required="true" class="form-control" ng-model="field.sequence" />
           </div>
           <div class="form-group">
             <label>Size</label>
             <input type="number" class="form-control" ng-model="field.size" />
-          </div>
-          <div class="form-group">
-          <label>Active</label>
-            <input type="checkbox" class="form-control" ng-model="field.active" />
           </div>
           <div class="form-group">
             <label>Multiple</label>
@@ -119,13 +111,14 @@
           </div>
           <div class="form-group">
             <label>Field Type</label>
-            <select class="form-control" ng-model="field.fieldType">
+            <select class="form-control" required="true" ng-model="field.fieldType">
               <option value="">-- Please select --</option>
               <option ng-repeat="type in fieldTypes" value="{{type._links.self.href}}">{{type.value}}</option>
             </select>
           </div>
           <button type="submit" class="btn btn-primary">Save</button>
-          <button type="button" class="btn btn-default" ui-sref="main.home">Cancel</button>
+          <button type="button" class="btn btn-default" ui-sref="main.home" ng-show="!field.id">Cancel</button>
+          <button type="button" class="btn btn-default" ng-click="toggleEditMode()" ng-show="field.id">Cancel</button>
         </form>
       </div>
     </div>

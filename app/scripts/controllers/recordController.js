@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sbAdminApp')
-  .controller('RecordCtrl', ['$http', '$scope', '$stateParams', 'SpringDataRestAdapter', '$q', 'Upload', '$timeout', function ($http, $scope, $stateParams, SpringDataRestAdapter, $q, Upload, $timeout) {
+  .controller('RecordCtrl', ['$http', '$scope', '$state', '$stateParams', 'SpringDataRestAdapter', '$q', 'Upload', '$timeout', function ($http, $scope, $state, $stateParams, SpringDataRestAdapter, $q, Upload, $timeout) {
 
   $scope.fields = [];
   $scope.record = {};
@@ -28,6 +28,7 @@ angular.module('sbAdminApp')
       $scope.contents = processedResponse._embeddedItems;
     });
   } else {
+    $scope.record['active'] = true;
     $scope.editMode = true;
   }
 
@@ -38,8 +39,8 @@ angular.module('sbAdminApp')
   $scope.submit = function() {
     if ($stateParams.recordId) {
 
-      var record = $scope.record;
-      record['contents'] = $scope.contents;
+      var record = angular.copy($scope.record);
+      record['contents'] = angular.copy($scope.contents);
       var promises = [];
 
       record.contents.forEach(function(content) {
@@ -49,8 +50,8 @@ angular.module('sbAdminApp')
             console.log('Content updated.');
             record.contents[record.contents.indexOf(content)] = response.headers('Location');
           }, function(response) {
-            $scope.errorMessage = 'Problem while updating content: ' + response.data;
-          });
+            $scope.errorMessage = 'Problem while updating content: ' + response.data.message;
+          })
         );
       });
 
@@ -59,8 +60,8 @@ angular.module('sbAdminApp')
           console.log('Record updated.');
           $scope.successMessage = 'Record updated.';
         }, function(response) {
-          $scope.errorMessage = 'Problem while updating record: ' + response.data;
-        });
+          $scope.errorMessage = 'Problem while updating record: ' + response.data.message;
+        })
       });
     } else {
       var record = $scope.record;
@@ -74,21 +75,23 @@ angular.module('sbAdminApp')
             console.log('Content saved.');
             record.contents[record.contents.indexOf(content)] = response.headers('Location');
           }, function(response) {
-            $scope.errorMessage = 'Problem while saving content: ' + response.data;
-          });
+            $scope.errorMessage = 'Problem while saving content: ' + response.data.message;
+          })
         );
       });
 
       $q.all(promises).then(function() {
-        $http.post('http://localhost:8080/api/records/', record).then(function() {
+        $http.post('http://localhost:8080/api/records/', record).then(function(response) {
           console.log('Record saved.');
           $scope.successMessage = 'Record saved.';
+          var generatedId = response.headers('Location').split('/').pop();
+          $state.go('main.library.record', {recordId: generatedId});
         }, function(response) {
-          $scope.errorMessage = 'Problem while saving record: ' + response.data;
-        });
+          $scope.errorMessage = 'Problem while saving record: ' + response.data.message;
+        })
       });
     }
-
+    $scope.editMode = false;
   }
 
   $scope.initContents = function(fields) {
@@ -104,7 +107,8 @@ angular.module('sbAdminApp')
   }
 
   $scope.addValue = function(content) {
-    content.values.push({});
+    var newValue = angular.copy(content.values[0]);
+    content.values.push(newValue);
   }
 
   $scope.removeValue = function(content, index) {
@@ -114,30 +118,32 @@ angular.module('sbAdminApp')
   $scope.uploadingFile = false;
 
   $scope.uploadFile = function(value) {
-    $scope.file = value.file
+    if (value.file) {
+      $scope.file = value.file
 
-    value.file.upload = Upload.upload({
-      url: 'http://localhost:8080/upload',
-      data: {libraryId: $stateParams.libraryId, recordId: $stateParams.recordId, fileName: value.file.name, file: value.file}
-    });
-
-    value.file.upload.then(function (response) {
-        $timeout(function () {
-          value.file.result = response.data;
-          value.path = response.data.path;
-          value.name = response.data.name;
-          value.originalName = value.file.name;
-          value.fileType = value.file.type;
-          value.size = value.file.size;
-          $scope.successMessage = 'File uploaded.';
-        });
-      }, function (response) {
-        if (response.status > 0) {
-          $scope.errorMessage = 'Problem while uploading file: ' + response.data;
-        }
-      }, function (evt) {
-        value.file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+      value.file.upload = Upload.upload({
+        url: 'http://localhost:8080/upload',
+        data: {libraryId: $stateParams.libraryId, fileName: value.file.name, file: value.file}
       });
+
+      value.file.upload.then(function (response) {
+          $timeout(function () {
+            value.file.result = response.data;
+            value.path = response.data.path;
+            value.name = response.data.name;
+            value.originalName = value.file.name;
+            value.fileType = value.file.type;
+            value.size = value.file.size;
+            $scope.successMessage = 'File uploaded.';
+          });
+        }, function (response) {
+          if (response.status > 0) {
+            $scope.errorMessage = 'Problem while uploading file: ' + response.data.message;
+          }
+        }, function (evt) {
+          value.file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
+    }
   }
 
 }]);

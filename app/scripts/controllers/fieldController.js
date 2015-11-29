@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sbAdminApp')
-  .controller('FieldCtrl', ['$http', '$scope', '$stateParams', 'SpringDataRestAdapter', function ($http, $scope, $stateParams, SpringDataRestAdapter) {
+  .controller('FieldCtrl', ['$http', '$scope', '$state', '$stateParams', 'SpringDataRestAdapter', function ($http, $scope, $state, $stateParams, SpringDataRestAdapter) {
 
   $scope.fieldTypes = [];
   $scope.field = {};
@@ -38,17 +38,20 @@ angular.module('sbAdminApp')
         console.log('Field updated.');
         $scope.successMessage = 'Field updated.';
       }, function(response) {
-        $scope.errorMessage = 'Problem while updating field: ' + response.data;
+        $scope.errorMessage = 'Problem while updating field: ' + response.data.message;
       });
     } else if ($stateParams.libraryId) {
       $scope.field['library'] = 'http://localhost:8080/api/libraries/' + $stateParams.libraryId
-      $http.post('http://localhost:8080/api/fields/', $scope.field).then(function() {
+      $http.post('http://localhost:8080/api/fields/', $scope.field).then(function(response) {
         console.log('Field saved.');
         $scope.successMessage = 'Field saved.';
+        var generatedId = response.headers('Location').split('/').pop();
+        $state.go('main.library.field', {fieldId: generatedId});
       }, function(response) {
-        $scope.errorMessage = 'Problem while saving field: ' + response.data;
+        $scope.errorMessage = 'Problem while saving field: ' + response.data.message;
       });
     }
+    $scope.editMode = false;
   }
 
 }]);

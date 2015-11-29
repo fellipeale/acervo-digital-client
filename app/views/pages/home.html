@@ -23,15 +23,13 @@
             <tr>
               <th>Title</th>
               <th>Description</th>
-              <th>Active</th>
               <th>Options</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="library in libraries">
               <td class="col-lg-4">{{library.title}}</td>
-              <td class="col-lg-5">{{library.description}}</td>
-              <td class="col-lg-1">{{library.active}}</td>
+              <td class="col-lg-6">{{library.description}}</td>
               <td class="col-lg-2">
                 <button type="button" class="btn btn-default btn-circle" ui-sref="main.library({libraryId: {{library.id}}})">E</button>
                 <button type="button" class="btn btn-default btn-circle" confirmation-modal="deleteLibrary(library.id)">D</button>

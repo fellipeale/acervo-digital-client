@@ -36,7 +36,8 @@ angular
                 name:'sbAdminApp',
                 files:[
                   'scripts/directives/header/header.js',
-                  'scripts/directives/header/header-notification/header-notification.js'
+                  'scripts/directives/header/header-notification/header-notification.js',
+                  'scripts/directives/confirmation-modal/confirmation-modal.js'
                 ]
             })
           }
@@ -51,7 +52,6 @@ angular
             return $ocLazyLoad.load({
                 name:'sbAdminApp',
                 files:[
-                  'scripts/directives/confirmation-modal/confirmation-modal.js',
                   'scripts/controllers/homeController.js'
                 ]
             })
@@ -67,7 +67,6 @@ angular
             return $ocLazyLoad.load({
                 name:'sbAdminApp',
                 files:[
-                  'scripts/directives/confirmation-modal/confirmation-modal.js',
                   'scripts/controllers/libraryController.js'
                 ]
             })

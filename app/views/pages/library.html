@@ -36,10 +36,6 @@
              <td>Description</td>
              <td>{{library.description}}</td>
            </tr>
-           <tr>
-             <td>Active</td>
-             <td>{{library.active}}</td>
-           </tr>
           </tbody>
         </table>
         <button type="button" class="btn btn-primary" ng-click="toggleEditMode()">Edit</button>
@@ -61,12 +57,9 @@
             <label>Description</label>
             <textarea ng-model="library.description" class="form-control"></textarea>
           </div>
-          <div class="form-group">
-            <label>Active</label>
-            <input type="checkbox" class="form-control" ng-model="library.active" />
-          </div>
           <button type="submit" class="btn btn-primary">Save</button>
-          <button type="button" class="btn btn-default" ui-sref="main.home">Cancel</button>
+          <button type="button" class="btn btn-default" ui-sref="main.home" ng-show="!library.id">Cancel</button>
+          <button type="button" class="btn btn-default" ng-click="toggleEditMode()" ng-show="library.id">Cancel</button>
         </form>
       </div>
     </div>
@@ -97,7 +90,11 @@
                 </thead>
                 <tbody>
                   <tr ng-repeat="record in records">
-                    <td>{{record.contents._embeddedItems[0].values[0].value}}</td>
+                    <td ng-repeat="content in record.contents">
+                      <div ng-repeat="value in content.values">
+                        {{value.value}}
+                      </div>
+                    </td>
                     <td class="col-lg-2">
                       <button type="button" class="btn btn-default btn-circle" ui-sref="main.library.record({recordId: {{record.id}}})">E</button>
                       <button type="button" class="btn btn-default btn-circle" confirmation-modal="deleteRecord(record.id)">D</button>
