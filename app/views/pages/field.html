@@ -4,6 +4,16 @@
       <h1 class="page-header">Field {{field.title}}</h1>
     </div>
   </div>
+  <div class="row">
+    <div class="alert alert-success alert-dismissable" ng-if="successMessage">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{successMessage}}
+    </div>
+    <div class="alert alert-danger alert-dismissable" ng-if="errorMessage">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{errorMessage}}
+    </div>
+  </div>
   <div class="row" ng-show="!editMode">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -73,7 +83,7 @@
         <form role="form" class="ng-pristine ng-valid" ng-submit="submit()">
           <div class="form-group">
             <label>Title</label>
-            <input type="text" class="form-control" ng-model="field.title" />
+            <input type="text" required="true" class="form-control" ng-model="field.title" />
           </div>
           <div class="form-group">
             <label>Help</label>
@@ -85,11 +95,11 @@
           </div>
           <div class="form-group">
             <label>Sequence</label>
-            <input type="text" class="form-control" ng-model="field.sequence" />
+            <input type="number" class="form-control" ng-model="field.sequence" />
           </div>
           <div class="form-group">
             <label>Size</label>
-            <input type="text" class="form-control" ng-model="field.size" />
+            <input type="number" class="form-control" ng-model="field.size" />
           </div>
           <div class="form-group">
           <label>Active</label>

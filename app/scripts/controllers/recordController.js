@@ -48,14 +48,18 @@ angular.module('sbAdminApp')
           $http.put('http://localhost:8080/api/contents/' + content.id, content).then(function(response) {
             console.log('Content updated.');
             record.contents[record.contents.indexOf(content)] = response.headers('Location');
-          })
+          }, function(response) {
+            $scope.errorMessage = 'Problem while updating content: ' + response.data;
+          });
         );
       });
 
       $q.all(promises).then(function() {
         $http.put('http://localhost:8080/api/records/' + $stateParams.recordId, record).then(function() {
           console.log('Record updated.');
-          $scope.successMessage = "Record updated.";
+          $scope.successMessage = 'Record updated.';
+        }, function(response) {
+          $scope.errorMessage = 'Problem while updating record: ' + response.data;
         });
       });
     } else {
@@ -69,14 +73,18 @@ angular.module('sbAdminApp')
           $http.post('http://localhost:8080/api/contents/', content).then(function(response) {
             console.log('Content saved.');
             record.contents[record.contents.indexOf(content)] = response.headers('Location');
-          })
+          }, function(response) {
+            $scope.errorMessage = 'Problem while saving content: ' + response.data;
+          });
         );
       });
 
       $q.all(promises).then(function() {
         $http.post('http://localhost:8080/api/records/', record).then(function() {
           console.log('Record saved.');
-          $scope.successMessage = "Record saved.";
+          $scope.successMessage = 'Record saved.';
+        }, function(response) {
+          $scope.errorMessage = 'Problem while saving record: ' + response.data;
         });
       });
     }
@@ -121,11 +129,11 @@ angular.module('sbAdminApp')
           value.originalName = value.file.name;
           value.fileType = value.file.type;
           value.size = value.file.size;
-          $scope.successMessage = "File uploaded.";
+          $scope.successMessage = 'File uploaded.';
         });
       }, function (response) {
         if (response.status > 0) {
-          $scope.errorMessage = response.status + ': ' + response.data;
+          $scope.errorMessage = 'Problem while uploading file: ' + response.data;
         }
       }, function (evt) {
         value.file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));

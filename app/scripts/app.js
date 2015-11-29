@@ -51,6 +51,7 @@ angular
             return $ocLazyLoad.load({
                 name:'sbAdminApp',
                 files:[
+                  'scripts/directives/confirmation-modal/confirmation-modal.js',
                   'scripts/controllers/homeController.js'
                 ]
             })
@@ -66,6 +67,7 @@ angular
             return $ocLazyLoad.load({
                 name:'sbAdminApp',
                 files:[
+                  'scripts/directives/confirmation-modal/confirmation-modal.js',
                   'scripts/controllers/libraryController.js'
                 ]
             })

@@ -34,13 +34,19 @@ angular.module('sbAdminApp')
 
   $scope.submit = function() {
     if ($stateParams.fieldId) {
-      $http.put("http://localhost:8080/api/fields/" + $stateParams.fieldId, $scope.field).then(function() {
-        console.log("Field updated.")
+      $http.put('http://localhost:8080/api/fields/' + $stateParams.fieldId, $scope.field).then(function() {
+        console.log('Field updated.');
+        $scope.successMessage = 'Field updated.';
+      }, function(response) {
+        $scope.errorMessage = 'Problem while updating field: ' + response.data;
       });
     } else if ($stateParams.libraryId) {
-      $scope.field['library'] = "http://localhost:8080/api/libraries/" + $stateParams.libraryId
-      $http.post("http://localhost:8080/api/fields/", $scope.field).then(function() {
-        console.log("Field saved.")
+      $scope.field['library'] = 'http://localhost:8080/api/libraries/' + $stateParams.libraryId
+      $http.post('http://localhost:8080/api/fields/', $scope.field).then(function() {
+        console.log('Field saved.');
+        $scope.successMessage = 'Field saved.';
+      }, function(response) {
+        $scope.errorMessage = 'Problem while saving field: ' + response.data;
       });
     }
   }

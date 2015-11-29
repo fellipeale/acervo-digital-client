@@ -4,6 +4,16 @@
       <h1 class="page-header">Library {{library.title}}</h1>
     </div>
   </div>
+  <div class="row">
+    <div class="alert alert-success alert-dismissable" ng-if="successMessage">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{successMessage}}
+    </div>
+    <div class="alert alert-danger alert-dismissable" ng-if="errorMessage">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{errorMessage}}
+    </div>
+  </div>
   <div class="row" ng-show="!editMode">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -45,7 +55,7 @@
         <form role="form" class="ng-pristine ng-valid" ng-submit="submit()">
           <div class="form-group">
             <label>Title</label>
-            <input type="text" class="form-control" ng-model="library.title" />
+            <input type="text" required="true" class="form-control" ng-model="library.title" />
           </div>
           <div class="form-group">
             <label>Description</label>
@@ -90,7 +100,7 @@
                     <td>{{record.contents._embeddedItems[0].values[0].value}}</td>
                     <td class="col-lg-2">
                       <button type="button" class="btn btn-default btn-circle" ui-sref="main.library.record({recordId: {{record.id}}})">E</button>
-                      <button type="button" class="btn btn-default btn-circle">D</button>
+                      <button type="button" class="btn btn-default btn-circle" confirmation-modal="deleteRecord(record.id)">D</button>
                     </td>
                   </tr>
                 </tbody>
@@ -114,13 +124,13 @@
                     <td class="col-lg-5">{{field.fieldType.value}}</td>
                     <td class="col-lg-2">
                       <button type="button" class="btn btn-default btn-circle" ui-sref="main.library.field({fieldId: {{field.id}}})">E</button>
-                      <button type="button" class="btn btn-default btn-circle">D</button>
+                      <button type="button" class="btn btn-default btn-circle" confirmation-modal="deleteField(field.id)">D</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <button type="button" class="btn btn-primary" ui-sref="main.library.field">New Field</button> <!-- I don't know why, but this only work with this quotes -->
+            <button type="button" class="btn btn-primary" ui-sref="main.library.field">New Field</button>
           </div>
         </div>
       </div>

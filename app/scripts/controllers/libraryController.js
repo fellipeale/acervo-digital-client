@@ -12,30 +12,11 @@ angular.module('sbAdminApp')
 
   $scope.selectedTab = 0;
 
-  if ($stateParams.libraryId) {
-    var libraryPromise = $http.get('http://localhost:8080/api/libraries/' + $stateParams.libraryId);
-
-    SpringDataRestAdapter.process(libraryPromise).then(function (processedResponse) {
-      $scope.library = processedResponse;
-    });
-
-    var presentationFieldsPromise = $http.get('http://localhost:8080/api/fields/search/findByPresentationTrueAndLibraryId?id=' + $stateParams.libraryId);
-
-    SpringDataRestAdapter.process(presentationFieldsPromise, 'fieldType').then(function (processedResponse) {
-      $scope.presentationFields = processedResponse._embeddedItems;
-    });
-
-    var fieldsPromise = $http.get('http://localhost:8080/api/fields/search/findByLibraryIdOrderBySequenceAsc?id=' + $stateParams.libraryId);
-
-    SpringDataRestAdapter.process(fieldsPromise, 'fieldType').then(function (processedResponse) {
-      $scope.fields = processedResponse._embeddedItems;
-    });
-
-    var recordsPromise = $http.get('http://localhost:8080/api/records/search/findByLibraryId?id=' + $stateParams.libraryId);
-
-    SpringDataRestAdapter.process(recordsPromise, ['contents', 'field'], true).then(function (processedResponse) {
-      $scope.records = processedResponse._embeddedItems;
-    });
+  if ($stateParams.libraryId) {    
+    loadLibrary();
+    loadPresentationFields();
+    loadFields();
+    loadRecords();    
   } else {
     $scope.library['active'] = true;
     $scope.editMode = true;
@@ -51,14 +32,76 @@ angular.module('sbAdminApp')
 
   $scope.submit = function() {
     if ($stateParams.libraryId) {
-      $http.put("http://localhost:8080/api/libraries/" + $stateParams.libraryId, $scope.library).then(function() {
-        console.log("Library updated.")
+      $http.put('http://localhost:8080/api/libraries/' + $stateParams.libraryId, $scope.library).then(function() {
+        console.log('Library updated.');
+        $scope.successMessage = 'Library updated.';
+      }, function(response) {
+        $scope.errorMessage = 'Problem while updating library: ' + response.data;
       });
     } else {
-      $http.post("http://localhost:8080/api/libraries/", $scope.library).then(function() {
-        console.log("Library saved.")
+      $http.post('http://localhost:8080/api/libraries/', $scope.library).then(function() {
+        console.log('Library saved.');
+        $scope.successMessage = 'Library saved.';
+      }, function(response) {
+        $scope.errorMessage = 'Problem while saving library: ' + response.data;
       });
     }
+  }
+
+  $scope.deleteField = function(id) {
+    var fieldDeletionPromise = $http.delete('http://localhost:8080/api/fields/' + id);
+
+    SpringDataRestAdapter.process(fieldDeletionPromise).then(function () {
+      console.log('Field deleted.');
+      $scope.successMessage = 'Field deleted.';
+      loadFields();
+    }, function(response) {
+      $scope.errorMessage = 'Problem while deleting field: ' + response.data;
+    });
+  }
+
+  $scope.recordLibrary = function(id) {
+    var recordDeletionPromise = $http.delete('http://localhost:8080/api/records/' + id);
+
+    SpringDataRestAdapter.process(recordDeletionPromise).then(function () {
+      console.log('Record deleted.');
+      $scope.successMessage = 'Record deleted.';
+      loadRecords();
+    }, function(response) {
+      $scope.errorMessage = 'Problem while deleting record: ' + response.data;
+    });
+  }
+
+  function loadLibrary() {
+    var libraryPromise = $http.get('http://localhost:8080/api/libraries/' + $stateParams.libraryId);
+
+    SpringDataRestAdapter.process(libraryPromise).then(function (processedResponse) {
+      $scope.library = processedResponse;
+    });
+  }
+
+  function loadPresentationFields() {
+    var presentationFieldsPromise = $http.get('http://localhost:8080/api/fields/search/findByPresentationTrueAndLibraryId?id=' + $stateParams.libraryId);
+
+    SpringDataRestAdapter.process(presentationFieldsPromise, 'fieldType').then(function (processedResponse) {
+      $scope.presentationFields = processedResponse._embeddedItems;
+    });
+  }
+
+  function loadFields() {
+    var fieldsPromise = $http.get('http://localhost:8080/api/fields/search/findByLibraryIdOrderBySequenceAsc?id=' + $stateParams.libraryId);
+
+    SpringDataRestAdapter.process(fieldsPromise, 'fieldType').then(function (processedResponse) {
+      $scope.fields = processedResponse._embeddedItems;
+    });
+  }
+
+  function loadRecords() {
+    var recordsPromise = $http.get('http://localhost:8080/api/records/search/findByLibraryId?id=' + $stateParams.libraryId);
+
+    SpringDataRestAdapter.process(recordsPromise, ['contents', 'field'], true).then(function (processedResponse) {
+      $scope.records = processedResponse._embeddedItems;
+    });
   }
 
 });
