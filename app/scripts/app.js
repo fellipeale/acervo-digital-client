@@ -37,6 +37,7 @@ angular
                 files:[
                   'scripts/directives/header/header.js',
                   'scripts/directives/header/header-notification/header-notification.js',
+                  'scripts/directives/header/header-search/header-search.js',
                   'scripts/directives/confirmation-modal/confirmation-modal.js'
                 ]
             })

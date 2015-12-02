@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('sbAdminApp')
-  .controller('RecordCtrl', ['$http', '$scope', '$state', '$stateParams', 'SpringDataRestAdapter', '$q', 'Upload', '$timeout', function ($http, $scope, $state, $stateParams, SpringDataRestAdapter, $q, Upload, $timeout) {
+  .controller('RecordCtrl', ['$http', '$scope', '$state', '$stateParams', 'SpringDataRestAdapter', '$q', 'Upload', '$timeout', '$sce', function ($http, $scope, $state, $stateParams, SpringDataRestAdapter, $q, Upload, $timeout, $sce) {
+
+  $scope.libraryId = $stateParams.libraryId;
 
   $scope.fields = [];
   $scope.record = {};
@@ -25,7 +27,9 @@ angular.module('sbAdminApp')
     var contentsPromise = $http.get('http://localhost:8080/api/contents/search/findByRecordId?id=' + $stateParams.recordId);
 
     SpringDataRestAdapter.process(contentsPromise, ['field', 'fieldType'], true).then(function (processedResponse) {
-      $scope.contents = processedResponse._embeddedItems;
+      for (var i = 0; i<processedResponse._embeddedItems.length; i++) {
+        $scope.contents[i] = processedResponse._embeddedItems[i];
+      }
     });
   } else {
     $scope.record['active'] = true;
@@ -44,15 +48,25 @@ angular.module('sbAdminApp')
       var promises = [];
 
       record.contents.forEach(function(content) {
-        record.contents[record.contents.indexOf(content)].field = 'http://localhost:8080/api/fields/' + content.field.id;
-        promises.push(
-          $http.put('http://localhost:8080/api/contents/' + content.id, content).then(function(response) {
-            console.log('Content updated.');
-            record.contents[record.contents.indexOf(content)] = response.headers('Location');
-          }, function(response) {
-            $scope.errorMessage = 'Problem while updating content: ' + response.data.message;
-          })
-        );
+        content.field = 'http://localhost:8080/api/fields/' + content.field.id;
+        var contentPromise = function(content) {
+          if (content.id) {
+            return $http.put('http://localhost:8080/api/contents/' + content.id, content).then(function(response) {
+              console.log('Content updated.');
+              record.contents[record.contents.indexOf(content)] = response.headers('Location');
+            }, function(response) {
+              $scope.errorMessage = 'Problem while updating content: ' + response.data.message;
+            });
+          } else {
+            return $http.post('http://localhost:8080/api/contents/', content).then(function(response) {
+              console.log('Content saved.');
+              record.contents[record.contents.indexOf(content)] = response.headers('Location');
+            }, function(response) {
+              $scope.errorMessage = 'Problem while saving content: ' + response.data.message;
+            });
+          }
+        }
+        promises.push(contentPromise(content));
       });
 
       $q.all(promises).then(function() {
@@ -70,6 +84,7 @@ angular.module('sbAdminApp')
       var promises = [];
 
       record.contents.forEach(function(content) {
+        content.field = 'http://localhost:8080/api/fields/' + content.field.id;
         promises.push(
           $http.post('http://localhost:8080/api/contents/', content).then(function(response) {
             console.log('Content saved.');
@@ -98,8 +113,8 @@ angular.module('sbAdminApp')
     $scope.contents = [];
     for (var i = 0; i < fields.length; i++) {
       $scope.contents[i] = {};
-      $scope.contents[i]['field'] = 'http://localhost:8080/api/fields/' + fields[i].id;
-      // $scope.contents[i]['field'] = fields[i];
+      // $scope.contents[i]['field'] = 'http://localhost:8080/api/fields/' + fields[i].id;
+      $scope.contents[i]['field'] = fields[i];
       $scope.contents[i]['values'] = [];
       $scope.contents[i].values[0] = {};
       $scope.contents[i].values[0]['type'] = fields[i].fieldType.key;
@@ -144,6 +159,22 @@ angular.module('sbAdminApp')
           value.file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
         });
     }
+  }
+
+  $scope.getMIME = function(fieldType) {
+    if (fieldType == 'IMAGE') {
+      return 'image/*';
+    } else if (fieldType == 'VIDEO') {
+      return 'video/*';
+    } else if (fieldType == 'AUDIO') {
+      return 'audio/*';
+    } else {
+      return '';
+    }
+  }
+
+  $scope.trustUrl = function(url) {
+    return $sce.trustAsResourceUrl('http://localhost:8080/download' + url);
   }
 
 }]);

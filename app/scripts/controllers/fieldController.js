@@ -3,6 +3,8 @@
 angular.module('sbAdminApp')
   .controller('FieldCtrl', ['$http', '$scope', '$state', '$stateParams', 'SpringDataRestAdapter', function ($http, $scope, $state, $stateParams, SpringDataRestAdapter) {
 
+  $scope.libraryId = $stateParams.libraryId;
+
   $scope.fieldTypes = [];
   $scope.field = {};
 
