@@ -38,7 +38,8 @@ angular
                   'scripts/directives/header/header.js',
                   'scripts/directives/header/header-notification/header-notification.js',
                   'scripts/directives/header/header-search/header-search.js',
-                  'scripts/directives/confirmation-modal/confirmation-modal.js'
+                  'scripts/directives/confirmation-modal/confirmation-modal.js',
+                  'scripts/controllers/headerSearchController.js'
                 ]
             })
           }
@@ -54,6 +55,21 @@ angular
                 name:'sbAdminApp',
                 files:[
                   'scripts/controllers/homeController.js'
+                ]
+            })
+          }
+        }
+      })
+      .state('main.search',{
+        templateUrl:'views/pages/search.html',
+        url:'/search/:query',
+        controller:'SearchCtrl',
+        resolve: {
+          loadMyFile:function($ocLazyLoad) {
+            return $ocLazyLoad.load({
+                name:'sbAdminApp',
+                files:[
+                  'scripts/controllers/searchController.js'
                 ]
             })
           }

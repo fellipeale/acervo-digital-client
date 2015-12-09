@@ -6,5 +6,6 @@ angular.module('sbAdminApp')
         templateUrl:'scripts/directives/header/header-search/header-search.html',
         restrict: 'E',
         replace: true,
+        controller: 'HeaderSearchCtrl'
       }
   });
